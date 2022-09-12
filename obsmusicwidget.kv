@@ -1,0 +1,112 @@
+#:kivy 2.1.0
+#:import NoTransition kivy.uix.screenmanager.NoTransition
+# Defines the details of the app's components
+
+
+# Initialize MainDisplay on launch
+MainDisplay:
+
+
+
+
+# Here we define the specifics of each screen in our app
+# Controller screen
+<Controller>:
+    name: "controller"
+
+    BoxLayout:
+        orientation: "vertical"
+        Label:
+            text: "Server Status"
+
+        BoxLayout:
+            orientation: "horizontal"
+            Button:
+                id: "start_widget_button"
+                text: "Start Widget"
+                on_release: root.start()
+            Button:
+                id: "stop_widget_button"
+                text: "Stop Widget"
+                on_press: root.stop()
+            Button:
+                id: "restart_widget_button"
+                text: "Restart Widget"
+                on_press: root.restart()
+
+
+# Guide screen
+<Guide>:
+    name: "guide"
+    Label:
+        text: "B"
+
+
+# About screen
+<About>:
+    name: "about"
+    Label:
+        text: "C"
+
+# Window manager
+<WindowManager>:
+    transition: NoTransition()
+
+
+
+
+
+# Here we define the properties and specifics of the visual components and layout of our app
+# The layout is defined by using a MainDisplay for the entire screen
+# The main display has a sidebar that is always visible, and a content area with our screen manager.
+
+# Main display area
+<MainDisplay@BoxLayout>:
+    orientation: "horizontal"
+
+    Sidebar:
+        size_hint: None, 1
+        width: "300dp"
+
+    ContentArea:
+        size_hint: 1, 1
+
+
+# Sidebar
+<Sidebar@BoxLayout>:
+    orientation: "vertical"
+
+    # Control interface button
+    Button:
+        text: "Controller"
+        size_hint: 1, None
+        height: "80dp"
+        on_release: app.root.children[0].children[0].current = "controller"
+
+    # Guide button
+    Button:
+        text: "Guide"
+        size_hint: 1, None
+        height: "80dp"
+        on_release: app.root.children[0].children[0].current = "guide"
+
+    # About button
+    Button:
+        text: "About"
+        size_hint: 1, None
+        height: "80dp"
+        on_release: app.root.children[0].children[0].current = "about"
+
+    # Empty widget to fill remaining space
+    Widget:
+
+
+# Content area
+<ContentArea@ScrollView>:
+    # The window manager is initialized in this area of the layout, along with each individual screen
+    WindowManager:
+        Controller:
+        Guide:
+        About:
+
+
