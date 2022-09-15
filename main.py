@@ -11,9 +11,12 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 import sys
 import os
 from multiprocessing import Process
+from decouple import config
 
 from server.app import start_widget
 
+import spotipy
+from spotipy.oauth2 import SpotifyPKCE
 
 
 kivy.require("2.1.0")
@@ -22,6 +25,12 @@ sys.stdout = log
 sys.stderr = log
 new_environ = os.environ.copy()
 
+
+
+# Set environment variables
+os.environ['SPOTIPY_CLIENT_ID'] = config('SPOTIFY_CLIENT_ID')
+os.environ['SPOTIPY_CLIENT_SECRET'] = config('SPOTIFY_CLIENT_SECRET')
+os.environ['SPOTIPY_REDIRECT_URI'] = config('REDIRECT')
 
 
 # Define the different screens/windows of the app, and a manager for the screens
@@ -44,6 +53,24 @@ class Controller(Screen):
         self.stop()
         self.start()
         print("The widget is successfully restarted (initiated via button id='restart_widget_button')")
+
+    # Let users give access to their third-party account information via authentication
+    # Spotify
+    def spotify_connect_account(self):
+        # Set the scope
+        scope = "user-library-read"
+        print(scope)
+
+        # Initiate spotify with an authentication manager
+        sp = spotipy.Spotify(auth_manager=SpotifyPKCE(scope=scope, open_browser=True))
+        print("a")
+
+        # Some test code 
+        results = sp.current_user_saved_tracks()
+        for idx, item in enumerate(results['items']):
+            track = item['track']
+            print(idx, track['artists'][0]['name'], " - ", track['name'])
+
 
 
 class Guide(Screen):

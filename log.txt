@@ -1,3 +1,0 @@
-The app is now active
-The widget is successfully launched (initiated via button id='start_widget_button')
-The widget is successfully shut down (initiated via button id='stop_widget_button'
