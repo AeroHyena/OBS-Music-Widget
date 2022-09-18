@@ -1,6 +1,7 @@
 #:kivy 2.1.0
 #:import NoTransition kivy.uix.screenmanager.NoTransition
-# Defines the details of the app's components
+#:import spotify_start authentication.spotify_start
+
 
 
 # Initialize MainDisplay on launch
@@ -36,7 +37,7 @@ MainDisplay:
             Button:
                 id: "connect_spotify_account"
                 text: "Connect Spotify"
-                on_press: root.spotify_connect_account()
+                on_press: spotify_start()
 
 
 # Guide screen
