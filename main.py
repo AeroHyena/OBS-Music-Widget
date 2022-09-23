@@ -10,14 +10,16 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 
 import sys
 import os
+from os import path
 from multiprocessing import Process
-from decouple import config
+import decouple
 
-from server.app import start_widget, test
+from server.app import start_widget
+from config import spotify_start
 
 
 
-
+# Setup the various modules used in this file
 kivy.require("2.1.0")
 log = open('log.txt', 'w')
 sys.stdout = log
@@ -25,11 +27,18 @@ sys.stderr = log
 # new_environ = os.environ.copy()
 
 
-
 # Set environment variables
-os.environ['SPOTIPY_CLIENT_ID'] = config('SPOTIFY_CLIENT_ID')
-os.environ['SPOTIPY_CLIENT_SECRET'] = config('SPOTIFY_CLIENT_SECRET')
-os.environ['SPOTIPY_REDIRECT_URI'] = config('REDIRECT')
+os.environ['SPOTIPY_CLIENT_ID'] = decouple.config('SPOTIFY_CLIENT_ID')
+os.environ['SPOTIPY_CLIENT_SECRET'] = decouple.config('SPOTIFY_CLIENT_SECRET')
+os.environ['SPOTIPY_REDIRECT_URI'] = decouple.config('REDIRECT')
+
+
+# Activate api services on app start
+def activcate_apis():
+    if path.exists(".cache"):
+        print(".cache exists: " + str(path.exists(".cache")))
+        spotify = spotify_start()
+        return spotify
 
 
 # Define the different screens/windows of the app, and a manager for the screens
@@ -37,6 +46,10 @@ class Controller(Screen):
     
     # enable starting and stopping the widget
     def start(self):
+        if not path.exists(".cache"):
+            print("No accounts are connected!")
+            return
+
         global p1
         p1 = Process(target=start_widget)
         p1.daemon = True
@@ -49,19 +62,26 @@ class Controller(Screen):
         print("The widget is successfully shut down (initiated via button id='stop_widget_button'")
 
     def restart(self):
-        self.stop()
-        self.start()
+
+        # Stop widget
+        global p1
+        p1.terminate()
+
+        # Start widget
+        p1 = Process(target=start_widget)
+        p1.daemon = True
+        p1.start()
         print("The widget is successfully restarted (initiated via button id='restart_widget_button')")
 
-        
 
+class Customize(Screen):
+    pass
 
 
 class Guide(Screen):
     pass
 
-
-class About(Screen):
+class SettingsPage(Screen):
     pass
 
 
@@ -74,11 +94,12 @@ class OBSMusicWidgetApp(App):
     pass
 
 
-
-
-
-
-# On file launch, start the UI
+# On app launch
 if __name__ == "__main__":
+    global api 
+    api = activcate_apis()
+
+    # Start the app
     print("The app is now active")
     OBSMusicWidgetApp().run()
+    

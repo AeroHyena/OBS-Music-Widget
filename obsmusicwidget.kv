@@ -1,6 +1,6 @@
 #:kivy 2.1.0
 #:import NoTransition kivy.uix.screenmanager.NoTransition
-#:import spotify_start authentication.spotify_start
+#:import spotify_start config.spotify_start
 
 
 
@@ -15,11 +15,21 @@ MainDisplay:
 <Controller>:
     name: "controller"
 
+    # Server Controls
     BoxLayout:
         orientation: "vertical"
-        Label:
-            text: "Server Status"
 
+        # Server status
+        BoxLayout:
+            orientation: "horizontal"
+            height: "40dp"
+            Label:
+                text: "Server Status:"
+            Label:
+                id: "server_status"
+                text: "offline"
+                
+        # Controls
         BoxLayout:
             orientation: "horizontal"
             Button:
@@ -34,24 +44,39 @@ MainDisplay:
                 id: "restart_widget_button"
                 text: "Restart Widget"
                 on_press: root.restart()
+
+        # Account connections
+        BoxLayout:
+            orientation: "horizontal"
             Button:
-                id: "connect_spotify_account"
+                id: "connect_spotify_account"s
                 text: "Connect Spotify"
                 on_press: spotify_start()
 
 
-# Guide screen
+# Customization screen
+<Customize>:
+    name: "customize"
+    Label:
+        text: "Customization options go here"
+
+
+# Guide Screen
 <Guide>:
     name: "guide"
     Label:
-        text: "B"
+        text: "Instructions go here"
 
 
-# About screen
-<About>:
-    name: "about"
+# Settings screen
+<SettingsPage>:
+    name: "settings"
     Label:
-        text: "C"
+        text: "Options go here"
+
+
+
+
 
 # Window manager
 <WindowManager>:
@@ -88,19 +113,27 @@ MainDisplay:
         height: "80dp"
         on_release: app.root.children[0].children[0].current = "controller"
 
-    # Guide button
+    # Customizations button
+    Button:
+        text: "Customization"
+        size_hint: 1, None
+        height: "80dp"
+        on_release: app.root.children[0].children[0].current = "customize"
+
+    # Guide section button
     Button:
         text: "Guide"
         size_hint: 1, None
         height: "80dp"
         on_release: app.root.children[0].children[0].current = "guide"
 
-    # About button
+    # Settings button
     Button:
-        text: "About"
+        text: "Settings"
         size_hint: 1, None
         height: "80dp"
-        on_release: app.root.children[0].children[0].current = "about"
+        on_release: app.root.children[0].children[0].current = "settings"
+
 
     # Empty widget to fill remaining space
     Widget:
@@ -111,7 +144,7 @@ MainDisplay:
     # The window manager is initialized in this area of the layout, along with each individual screen
     WindowManager:
         Controller:
+        Customize:
         Guide:
-        About:
-
+        SettingsPage:
 

@@ -1,0 +1,21 @@
+#widget {
+    background-color: lightgreen;
+    display: flex;
+
+    height: 250px;
+    width: 1000px;
+}
+
+#cover_art {
+    width: 250px;
+}
+
+#info {
+    padding: 25px;
+}
+
+#song_title, #artists{
+    font-size: 30px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
