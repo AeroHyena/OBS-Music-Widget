@@ -1,0 +1,32 @@
+Traceback (most recent call last):
+  File "d:\Code\cs50_final_project\Spotify_Livestream_Widget\main.py", line 141, in <module>
+    OBSMusicWidgetApp().run()
+  File "C:\Users\ariar\AppData\Local\Programs\Python\Python310\lib\site-packages\kivy\app.py", line 954, in run
+    self._run_prepare()
+  File "C:\Users\ariar\AppData\Local\Programs\Python\Python310\lib\site-packages\kivy\app.py", line 923, in _run_prepare
+    self.load_kv(filename=self.kv_file)
+  File "C:\Users\ariar\AppData\Local\Programs\Python\Python310\lib\site-packages\kivy\app.py", line 696, in load_kv
+    root = Builder.load_file(rfilename)
+  File "C:\Users\ariar\AppData\Local\Programs\Python\Python310\lib\site-packages\kivy\lang\builder.py", line 305, in load_file
+    return self.load_string(data, **kwargs)
+  File "C:\Users\ariar\AppData\Local\Programs\Python\Python310\lib\site-packages\kivy\lang\builder.py", line 405, in load_string
+    widget.apply_class_lang_rules(
+  File "C:\Users\ariar\AppData\Local\Programs\Python\Python310\lib\site-packages\kivy\uix\widget.py", line 470, in apply_class_lang_rules
+    Builder.apply(
+  File "C:\Users\ariar\AppData\Local\Programs\Python\Python310\lib\site-packages\kivy\lang\builder.py", line 540, in apply
+    self._apply_rule(
+  File "C:\Users\ariar\AppData\Local\Programs\Python\Python310\lib\site-packages\kivy\lang\builder.py", line 660, in _apply_rule
+    child.apply_class_lang_rules(
+  File "C:\Users\ariar\AppData\Local\Programs\Python\Python310\lib\site-packages\kivy\uix\widget.py", line 470, in apply_class_lang_rules
+    Builder.apply(
+  File "C:\Users\ariar\AppData\Local\Programs\Python\Python310\lib\site-packages\kivy\lang\builder.py", line 540, in apply
+    self._apply_rule(
+  File "C:\Users\ariar\AppData\Local\Programs\Python\Python310\lib\site-packages\kivy\lang\builder.py", line 662, in _apply_rule
+    self._apply_rule(
+  File "C:\Users\ariar\AppData\Local\Programs\Python\Python310\lib\site-packages\kivy\lang\builder.py", line 658, in _apply_rule
+    child = cls(__no_builder=True)
+  File "d:\Code\cs50_final_project\Spotify_Livestream_Widget\main.py", line 55, in __init__
+    self.get_accounts()
+  File "d:\Code\cs50_final_project\Spotify_Livestream_Widget\main.py", line 61, in get_accounts
+    spotify_user_data = Spotify.username(config.spotify_start())
+TypeError: spotify_start() missing 1 required positional argument: 'self'

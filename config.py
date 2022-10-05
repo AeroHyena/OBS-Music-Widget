@@ -1,9 +1,10 @@
 # This module handles connecting the app to a user's spotify account, as well as global variables
 import spotipy
 from spotipy.oauth2 import SpotifyPKCE
+import server.static.spotify as Spotify
 
 import decouple
-
+import os
 
 
 # Global Variables
@@ -13,13 +14,13 @@ __artists__ = "-"
 
 
 # Start a spotify object to be used in other modules
-def spotify_start():
+def spotify_start(self):
 
     # Set the scope within which the user's account data will be used
     scope = decouple.config('SCOPE')
     print("Scope set: " + scope)
             
-    # Initiate thwspotify object
+    # Initiate the spotify object
     spotify = spotipy.Spotify(auth_manager=SpotifyPKCE(scope=scope, open_browser=True))
     print("Spotify is initiated (" + str(spotify) + ")")
     
@@ -30,5 +31,11 @@ def spotify_start():
     # Return the object so it can be passed to other modules
     return spotify
 
+
+def spotify_disconnect(self):
+    os.remove(".cache")
+    print("Disconnected spotify account")
+    self.spotify_action = "No account connected"
+    self.connect_status = "Connect"
 
     

@@ -1,6 +1,7 @@
 #:kivy 2.1.0
 #:import NoTransition kivy.uix.screenmanager.NoTransition
 #:import spotify_start config.spotify_start
+#:import spotify_disconnect config.spotify_disconnect
 
 
 
@@ -10,55 +11,252 @@ MainDisplay:
 
 
 
-# Here we define the specifics of each screen in our app
+## Here we define the specifics of each main screen in our app
+
 # Controller screen
 <Controller>:
     name: "controller"
 
-    # Server Controls
     BoxLayout:
         orientation: "vertical"
+        width: root.width
+        height: root.height
 
-        # Server status
+        # Add an empty space before the server controls box
+        Widget:
+            size_hint: 1, None
+            height: dp(50)
+
+
+        # Server controls box
         BoxLayout:
-            orientation: "horizontal"
-            height: "40dp"
-            Label:
-                text: "Server Status:"
-            Label:
-                id: "server_status"
-                text: "offline"
+            orientation: "vertical"
+
+            # Size and position of the box
+            size_hint: None, None
+            height: dp(190)
+            width: dp(500)
+            pos_hint: {"center_x": .5}
+            padding: dp(20)
+
+            canvas:
+                Color:
+                    rgb: 5 / 255, 5 / 255, 24 / 255
+                Rectangle:
+                    pos: self.center_x - (self.width / 2), self.center_y - (self.height / 2)
+                    size: self.width, self.height
+                Color:
+                    rgb: 3 / 255, 76 / 255, 130 / 255
+                Line: 
+                    rectangle: (self.center_x - self.width / 2, self.center_y - self.height / 2, self.width, self.height)
+                    width: dp(1.5)
+
+
+            # Widget (server) status bar
+            BoxLayout:
+                orientation: "horizontal"
+                size_hint: None, None
+                height: dp(40)
+                width: dp(300)
+                pos_hint: {"center_x": .5}
                 
-        # Controls
-        BoxLayout:
-            orientation: "horizontal"
-            Button:
-                id: "start_widget_button"
-                text: "Start Widget"
-                on_release: root.start()
-            Button:
-                id: "stop_widget_button"
-                text: "Stop Widget"
-                on_press: root.stop()
-            Button:
-                id: "restart_widget_button"
-                text: "Restart Widget"
-                on_press: root.restart()
+                Label:
+                    text: "Widget Status:"
+                Widget:
+                    size_hint: None, 1
+                    width: dp(50)
+
+                    canvas:
+                        Color:
+                            rgb: 1, 0, 0
+                        Ellipse:
+                            pos: self.center_x + self.width / 1.25, self.center_y - dp(5)
+                            size: dp(10), dp(10)
+                Label:
+                    id: "widget_status"
+                    text: "inactive"
+
+            # Fill space in-between sections
+            Widget:
+                    
+            # Control buttons
+            BoxLayout:
+                orientation: "horizontal"
+                size_hint: 1, None
+                height: dp(30)
+                spacing: dp(7)
+
+                Button:
+                    id: "start_widget_button"
+                    text: "Start"
+                    on_release: root.start()
+
+                    size_hint: 0, 1
+                    width: dp(100)
+                    background_normal: ""
+                    background_color: 224 / 255, 220 / 255, 215 / 255, 1
+                    color: 0, 0, 0, 1
+                Button:
+                    id: "stop_widget_button"
+                    text: "Stop"
+                    on_press: root.stop()
+
+                    size_hint: 0, 1
+                    width: dp(100)
+                    background_normal: ""
+                    background_color: 224 / 255, 220 / 255, 215 / 255, 1
+                    color: 0, 0, 0, 1
+                Button:
+                    id: "restart_widget_button"
+                    text: "Restart"
+                    on_press: root.restart()
+                    size_hint: 0, 1
+                    width: dp(100)
+                    background_normal: ""
+                    background_color: 224 / 255, 220 / 255, 215 / 255, 1
+                    color: 0, 0, 0, 1
+                    
+        # Add some space in-between
+        Widget:
+            size_hint: 1, None
+            height: dp(50)
 
         # Account connections
         BoxLayout:
-            orientation: "horizontal"
-            Button:
-                id: "connect_spotify_account"s
-                text: "Connect Spotify"
-                on_press: spotify_start()
+            orientation: "vertical"
+            size_hint: None, None
+            height: dp(130) 
+            width: dp(500)
+            pos_hint: {"center_x": .5}
+            padding: dp(50)
+            
+            canvas:
+                Color:
+                    rgb: 5 / 255, 5 / 255, 24 / 255
+                Rectangle:
+                    pos: self.center_x - self.width / 2, self.center_y - self.height / 2
+                    size: self.width, self.height
+                Color:
+                    rgb: 3 / 255, 76 / 255, 130 / 255
+                Line: 
+                    rectangle: (self.center_x - self.width / 2, self.center_y - self.height / 2, self.width, self.height)
+                    width: dp(1.5)
+
+            # Spotify
+            BoxLayout:
+                orientation: "horizontal"
+                size_hint: 1, None
+                height: dp(30)
+                spacing: dp(10)
+
+                Label:
+                    id:"spotify_connected"
+                    text: root.connect_status
+                    canvas:
+                        Color:
+                            rgb: 3 / 255, 76 / 255, 130 / 255
+                        Line:
+                            rectangle: (self.center_x - self.width / 2, self.center_y - self.height / 2, self.width, self.height)
+                            width: dp(1.25)
+
+                Button:
+                    id: "connect_spotify_account"
+                    text: root.spotify_action
+                    size_hint: None, 1
+                    width: dp(100)
+                    background_normal: ""
+                    background_color: 224 / 255, 220 / 255, 215 / 255, 1
+                    color: 0, 0, 0, 1
+                    on_press: 
+                        if root.spotify_action == "Connect": spotify_start(self) 
+                        elif root.spotify_action == "Disconnect": spotify_disconnect(self)
+
+        # Empty widget to consume remaining space
+        Widget:
+
+            
+
+# Tab pages for the customize screen
+<Visuals>:
+    name: "visuals"
+
+    BoxLayout:
+        orientation: "vertical"
+
+        canvas:
+            Color:
+                rgb: 5 / 255, 5 / 255, 24 / 255
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Label:
+            text: "Display widget with chosen settings active"
+        Label:
+            text: "Change visuals"
+
+
+<Behavior>:
+    name: "behavior"
+
+    BoxLayout:
+        orientation: "vertical"
+
+        canvas:
+            Color:
+                rgb: 5 / 255, 5 / 255, 24 / 255
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Label:
+            text: "Display widget with chosen settings active"
+        Label:
+            text: "Set behaviors here"
 
 
 # Customization screen
 <Customize>:
     name: "customize"
-    Label:
-        text: "Customization options go here"
+    
+    # Main screen container
+    BoxLayout:
+        orientation: "vertical"
+
+        # Tabs
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint: 1, None
+            height: dp(30)
+
+            Button:
+                text: "Visuals"
+                on_release: self.parent.parent.children[0].children[0].current = "visuals"
+                size_hint: None, 1
+                width: dp(100)
+                background_normal: ""
+                background_color: 5 / 255, 5 / 255, 24 / 255, 1
+                canvas:
+                    Color:
+                        rgb: 3 / 255, 76 / 255, 130 / 255
+                    Line:
+                        # Trace the tab button shape
+                        points: (self.pos[0], self.pos[1], self.pos[0], self.pos[1] + dp(30), self.pos[0] + dp(100), self.pos[1] + dp(30), self.pos[0] + dp(100), self.pos[1], self.parent.width, self.parent.parent.height - dp(30))
+                        width: dp(1)
+
+            Button:
+                text: "Behavior"
+                on_release: self.parent.parent.children[0].children[0].current = "behavior"
+                size_hint: None, 1
+                width: dp(100)
+                background_normal: ""
+                background_color: 0, 0, 0, 1
+                
+                        
+
+        # Tabs content area
+        CustomizeTabs:
+            size_hint: 1, 1
 
 
 # Guide Screen
@@ -77,18 +275,24 @@ MainDisplay:
 
 
 
+## Setup managers to enable switching to different screens/pages on a button click
 
 # Window manager
 <WindowManager>:
     transition: NoTransition()
 
 
+# Tab manager
+<CustomizeTabManager>:
+    id: "customize_tabs"
+    transition: NoTransition()
 
 
 
-# Here we define the properties and specifics of the visual components and layout of our app
-# The layout is defined by using a MainDisplay for the entire screen
-# The main display has a sidebar that is always visible, and a content area with our screen manager.
+
+## Here we define the properties and specifics of the visual components and layout of our app
+## The layout is defined by using a Main Display box layout for the entire screen
+## The main display has a sidebar that is always visible, and a content area with our screen manager.
 
 # Main display area
 <MainDisplay@BoxLayout>:
@@ -102,38 +306,45 @@ MainDisplay:
         size_hint: 1, 1
 
 
-# Sidebar
+# Siderbar buttons style
+<SidebarButton>:
+    size_hint: 1, None
+    height: "80dp"
+    background_normal: ""
+    background_color: 224 / 255, 220 / 255, 215 / 255, 1
+    color: 0, 0, 0, 1
+
+
+# Sidebar with buttons that inherit from the parent SiebarButton class
 <Sidebar@BoxLayout>:
     orientation: "vertical"
+    spacing: dp(2)
+    canvas:
+        Color:
+            rgb: 5 / 255, 5 / 255, 24 / 255
+        Rectangle:
+            pos: self.pos
+            size: self.size
 
     # Control interface button
-    Button:
+    SidebarButton:
         text: "Controller"
-        size_hint: 1, None
-        height: "80dp"
         on_release: app.root.children[0].children[0].current = "controller"
-
+        
     # Customizations button
-    Button:
-        text: "Customization"
-        size_hint: 1, None
-        height: "80dp"
+    SidebarButton:
+        text: "Customize"
         on_release: app.root.children[0].children[0].current = "customize"
 
     # Guide section button
-    Button:
+    SidebarButton:
         text: "Guide"
-        size_hint: 1, None
-        height: "80dp"
         on_release: app.root.children[0].children[0].current = "guide"
 
     # Settings button
-    Button:
+    SidebarButton:
         text: "Settings"
-        size_hint: 1, None
-        height: "80dp"
         on_release: app.root.children[0].children[0].current = "settings"
-
 
     # Empty widget to fill remaining space
     Widget:
@@ -147,4 +358,17 @@ MainDisplay:
         Customize:
         Guide:
         SettingsPage:
+
+
+
+
+## Here we set up the tabs used in various screens
+
+# Tabs for the customize screen
+<CustomizeTabs@ScrollView>:
+    CustomizeTabManager:
+        Visuals:
+        Behavior:
+
+
 

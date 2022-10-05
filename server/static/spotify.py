@@ -1,16 +1,20 @@
 # This scripts contains all the spotify functions used by the widget
-# Authentication is handled via the authentication.py file in the root directory
+# Authentication is handled via config.py in the root directory
 
-from fileinput import close
-import spotipy
 import config
 
 import time
 import sys
 sys.path.append('../OBS_Music_Widget')
 
-import requests # to get image from the web
-import shutil # to save it locally
+import requests
+import shutil 
+
+
+# Get username of the connected account
+def username(spotify):
+    username = spotify.current_user()
+    return username
 
 
 # Get the user's current playback
@@ -24,8 +28,8 @@ def get_playback(spotify):
 def spotify_update(spotify, previous):
 
     # Get the user's current playback
+    print(spotify)
     data = get_playback(spotify)
-    print("Grabbed user playback data")
     # print(data)
     
     # Check if an ad is playing
