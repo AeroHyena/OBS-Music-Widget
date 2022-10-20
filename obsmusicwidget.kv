@@ -1,7 +1,6 @@
 #:kivy 2.1.0
 #:import NoTransition kivy.uix.screenmanager.NoTransition
-#:import spotify_start config.spotify_start
-#:import spotify_disconnect config.spotify_disconnect
+#:import decouple decouple
 
 
 
@@ -65,16 +64,10 @@ MainDisplay:
                 Widget:
                     size_hint: None, 1
                     width: dp(50)
-
-                    canvas:
-                        Color:
-                            rgb: 1, 0, 0
-                        Ellipse:
-                            pos: self.center_x + self.width / 1.25, self.center_y - dp(5)
-                            size: dp(10), dp(10)
                 Label:
                     id: "widget_status"
-                    text: "inactive"
+                    text: "Inactive"
+                    color: 1, 0, 0, 1
 
             # Fill space in-between sections
             Widget:
@@ -106,15 +99,21 @@ MainDisplay:
                     background_normal: ""
                     background_color: 224 / 255, 220 / 255, 215 / 255, 1
                     color: 0, 0, 0, 1
+
+                    disabled: True
                 Button:
                     id: "restart_widget_button"
                     text: "Restart"
                     on_press: root.restart()
+
                     size_hint: 0, 1
                     width: dp(100)
                     background_normal: ""
                     background_color: 224 / 255, 220 / 255, 215 / 255, 1
                     color: 0, 0, 0, 1
+
+                    disabled: True
+                
                     
         # Add some space in-between
         Widget:
@@ -160,16 +159,14 @@ MainDisplay:
                             width: dp(1.25)
 
                 Button:
-                    id: "connect_spotify_account"
+                    id: "spotify_account_connection"
                     text: root.spotify_action
                     size_hint: None, 1
                     width: dp(100)
                     background_normal: ""
                     background_color: 224 / 255, 220 / 255, 215 / 255, 1
                     color: 0, 0, 0, 1
-                    on_press: 
-                        if root.spotify_action == "Connect": spotify_start(self) 
-                        elif root.spotify_action == "Disconnect": spotify_disconnect(self)
+                    on_press: root.spotify_account_manage(self)
 
         # Empty widget to consume remaining space
         Widget:
@@ -183,13 +180,6 @@ MainDisplay:
     BoxLayout:
         orientation: "vertical"
 
-        canvas:
-            Color:
-                rgb: 5 / 255, 5 / 255, 24 / 255
-            Rectangle:
-                pos: self.pos
-                size: self.size
-
         Label:
             text: "Display widget with chosen settings active"
         Label:
@@ -201,13 +191,6 @@ MainDisplay:
 
     BoxLayout:
         orientation: "vertical"
-
-        canvas:
-            Color:
-                rgb: 5 / 255, 5 / 255, 24 / 255
-            Rectangle:
-                pos: self.pos
-                size: self.size
 
         Label:
             text: "Display widget with chosen settings active"
@@ -228,29 +211,21 @@ MainDisplay:
             orientation: "horizontal"
             size_hint: 1, None
             height: dp(30)
+            canvas:
+                Color:
+                    rgb: 5 / 255, 5 / 255, 24 / 255
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
 
-            Button:
+            TabButton:
                 text: "Visuals"
-                on_release: self.parent.parent.children[0].children[0].current = "visuals"
-                size_hint: None, 1
-                width: dp(100)
-                background_normal: ""
-                background_color: 5 / 255, 5 / 255, 24 / 255, 1
-                canvas:
-                    Color:
-                        rgb: 3 / 255, 76 / 255, 130 / 255
-                    Line:
-                        # Trace the tab button shape
-                        points: (self.pos[0], self.pos[1], self.pos[0], self.pos[1] + dp(30), self.pos[0] + dp(100), self.pos[1] + dp(30), self.pos[0] + dp(100), self.pos[1], self.parent.width, self.parent.parent.height - dp(30))
-                        width: dp(1)
+                on_release: self.parent.parent.children[0].children[0].current = "visuals"; self.change_active_tab()
+                background_color: 3 / 255, 76 / 255, 130 / 255
 
-            Button:
+            TabButton:
                 text: "Behavior"
-                on_release: self.parent.parent.children[0].children[0].current = "behavior"
-                size_hint: None, 1
-                width: dp(100)
-                background_normal: ""
-                background_color: 0, 0, 0, 1
+                on_release: self.parent.parent.children[0].children[0].current = "behavior"; self.change_active_tab()
                 
                         
 
@@ -269,8 +244,69 @@ MainDisplay:
 # Settings screen
 <SettingsPage>:
     name: "settings"
-    Label:
-        text: "Options go here"
+
+    BoxLayout:
+        orientation: "vertical"
+        padding: dp(50)
+
+        BoxLayout:
+            orientation: "vertical"
+            padding: dp(25)
+            spacing: dp(10)
+            pos_hint: {"center_x": .5}
+
+            canvas:
+                Color:
+                    rgb: 5 / 255, 5 / 255, 24 / 255
+                Rectangle:
+                    pos: self.center_x - (self.width / 2), self.center_y - (self.height / 2)
+                    size: self.width, self.height
+                Color:
+                    rgb: 3 / 255, 76 / 255, 130 / 255
+                Line: 
+                    rectangle: (self.center_x - self.width / 2, self.center_y - self.height / 2, self.width, self.height)
+                    width: dp(1.5)
+
+            # Port
+            BoxLayout:
+                orientation: "horizontal"
+                size_hint: 1, None
+                height: dp(50)
+                padding: dp(10)
+
+                Label:
+                    text: "Port"
+                    size_hint: None, 1
+                    width: dp(50)
+                TextInput:
+                    id: port
+                    text: decouple.config('PORT')
+                    multiline: False
+                    size_hint: None, 1
+                    width: dp(100)
+                    font_size: 16
+                    hint_font_size: 16
+                Widget:
+
+            # Consume empty space
+            Widget:
+            
+            # Save
+            BoxLayout:
+                orientation: "horizontal"
+                size_hint: 1, None
+                height: dp(50)
+
+                Widget:
+                Button:
+                    text: "Save"
+                    size_hint: None, None
+                    width: dp(100)
+                    height: dp(30)
+                    background_normal: ""
+                    background_color: 224 / 255, 220 / 255, 215 / 255, 1
+                    color: 0, 0, 0, 1
+                    on_release: root.save_settings()
 
 
 
@@ -306,19 +342,21 @@ MainDisplay:
         size_hint: 1, 1
 
 
-# Siderbar buttons style
+# Sidebar buttons style
 <SidebarButton>:
     size_hint: 1, None
     height: "80dp"
     background_normal: ""
     background_color: 224 / 255, 220 / 255, 215 / 255, 1
     color: 0, 0, 0, 1
+    on_release: root.change_active_window()
 
 
-# Sidebar with buttons that inherit from the parent SiebarButton class
+# Sidebar with buttons that inherit from the parent SidebarButton class
 <Sidebar@BoxLayout>:
     orientation: "vertical"
     spacing: dp(2)
+
     canvas:
         Color:
             rgb: 5 / 255, 5 / 255, 24 / 255
@@ -348,6 +386,14 @@ MainDisplay:
 
     # Empty widget to fill remaining space
     Widget:
+
+
+# Tab buttons
+<TabButton>:
+    size_hint: None, 1
+    width: dp(100)
+    background_normal: ""
+    background_color: 0, 0, 0, 1
 
 
 # Content area

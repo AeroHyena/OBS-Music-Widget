@@ -14,7 +14,7 @@ __artists__ = "-"
 
 
 # Start a spotify object to be used in other modules
-def spotify_start(self):
+def spotify_start():
 
     # Set the scope within which the user's account data will be used
     scope = decouple.config('SCOPE')
@@ -26,16 +26,9 @@ def spotify_start(self):
     
     # Get the username of the connected account
     user_spotify = spotify.current_user()
-    print("The following spotify account has been connected: " + str(user_spotify["display_name"]))
+    print("The following spotify account is found: " + str(user_spotify["display_name"]))
 
     # Return the object so it can be passed to other modules
     return spotify
-
-
-def spotify_disconnect(self):
-    os.remove(".cache")
-    print("Disconnected spotify account")
-    self.spotify_action = "No account connected"
-    self.connect_status = "Connect"
 
     
